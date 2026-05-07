@@ -1,3 +1,4 @@
+import torch
 from torchvision.io import decode_image
 from torch.utils.data import Dataset
 import json
@@ -42,11 +43,20 @@ class MPII_Human_Pose_YOLO(Dataset):
         # all center_point vals detected
         center_points_xy = []
 
+        center_counter = 0
         for _, value in self.annots[idx]["center_points"].items():
+            center_counter += 1
             center_points_xy.append(value)
 
-        print(center_points_xy)
+        center_points_xy = np.array(center_points_xy)
 
-        targets = [center_points_xy, sin_label, cos_label, conf_label]
+        # add extra padding so i can avoid collate
+        sin_label_pad = np.full(shape=(center_counter, 2), fill_value=sin_label)
+        cos_label_pad = np.full(shape=(center_counter, 2), fill_value=cos_label)
+        conf_label_pad = np.full(shape=(center_counter, 2), fill_value=conf_label)
 
-        return image, np.array(targets)
+        # print(f"SHAPES\nSIN: {sin_label_pad.shape}\nCOS: {cos_label_pad.shape}\nCONF: {conf_label_pad.shape}\nCENTER: {center_points_xy.shape}")
+
+        targets = [center_points_xy, sin_label_pad, cos_label_pad, conf_label_pad]
+
+        return image, targets

@@ -2,6 +2,7 @@ import sys
 sys.path.insert(0, "../data")
 
 import torch
+from torch.nn.utils.rnn import pad_sequence
 import numpy as np
 from torch.utils.data import DataLoader
 import loader
@@ -17,7 +18,7 @@ def train_loop():
 
     # for i in range(10):
     #     img, label = train_dataset.__getitem__(i)
-    #     print(label)
+    #     print(torch.tensor(label).shape)
 
     train_dataloader = DataLoader(
         train_dataset,
