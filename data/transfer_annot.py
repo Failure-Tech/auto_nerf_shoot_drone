@@ -5,7 +5,8 @@ import numpy as np
 from PIL import Image
 import json
 
-path = "./mpii_human_pose_v1/images"
+# path = "./mpii_human_pose_v1/images"
+path = "./mpii_human_pose_meta_album/org/openml/www/datasets/44334/ACT_410_Extended/images"
 model = YOLO("yolo26n-pose.pt")
 
 # USE THIS FOR FINAL JSON STRUCTURED OUTPUT (on each index)
@@ -33,17 +34,20 @@ data = []
 
 curr_total_index = 0
 for root, _, filenames in os.walk(path):
+        print(f"LEN: {len(filenames)}")
         for file in filenames:
             if (curr_total_index < len(filenames)):
                 file_path = (root + "/" + file).replace("\\", "/")
+                abs_file_path = os.path.abspath(file_path).replace("\\", "/")
+                print(f"FILE PATH: {abs_file_path}")
 
-                result_metrics = model.predict(file_path)
+                result_metrics = model.predict(abs_file_path)
 
                 curr_metric_obj = {}
                 boxes_metrics = {}
                 keypoints_joint = {}
 
-                curr_metric_obj["img_file_path"] = file_path
+                curr_metric_obj["img_file_path"] = abs_file_path
 
                 for result in result_metrics:
                     boxes = result.boxes
@@ -101,7 +105,13 @@ for root, _, filenames in os.walk(path):
     #     break
     # break
 
-with open("mpii_human_pose_yolo_annots.json", "w") as f:
+for value in data:
+    if isinstance(value["average_confidence"], str):
+        data.remove(value)
+    else:
+        continue
+
+with open("mpii_meta_albumhuman_pose_yolo_annots.json", "w") as f:
     json.dump(data, f, indent=2)
 
 print(f"Saved json file")

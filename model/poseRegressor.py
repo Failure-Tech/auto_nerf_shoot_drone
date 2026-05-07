@@ -4,18 +4,19 @@ import torch.nn as nn
 
 class DepthwiseSearchableBlock(nn.Module):
     def __init__(self, in_channels: int, out_channels: int, kernel_size=3, stride=1, padding=1):
-        super().__init__()
+        super(DepthwiseSearchableBlock, self).__init__()
         self.depthwisearchable = nn.Sequential(
             nn.Conv2d(
-                groups=in_channels,
+                in_channels=in_channels,
                 out_channels=in_channels,
                 kernel_size=kernel_size,
                 padding=padding,
-                stride=stride
+                stride=stride,
+                groups=in_channels,
             ),
             nn.ReLU(inplace=True),
             nn.Conv2d(
-                in_channels=out_channels,
+                in_channels=in_channels,
                 out_channels=out_channels,
                 kernel_size=1,
                 bias=False
@@ -34,7 +35,7 @@ class PoseRegressorModel(nn.Module):
         self.features = nn.Sequential(
             DepthwiseSearchableBlock(in_channels, hidden_channels, 3, 2, 1),
             DepthwiseSearchableBlock(hidden_channels, hidden_channels*2, 3, 2, 1),
-            DepthwiseSearchableBlock(hidden_channels*2, hidden_channels*4, 4, 3, 2, 1)
+            DepthwiseSearchableBlock(hidden_channels*2, hidden_channels*4, 3, 2, 1)
         )
 
         self.pool = nn.AdaptiveAvgPool2d((1, 1))
@@ -50,6 +51,6 @@ class PoseRegressorModel(nn.Module):
         x = self.pool(x)
 
         # 4D => 2D flatten
-        x = torch.flatten(x)
+        x = torch.flatten(x, 1)
         
         return self.linear(x)
