@@ -8,7 +8,8 @@ from torch.utils.data import DataLoader
 import loader
 from poseRegressor import PoseRegressorModel
 from loss import ComputeLoss
-import cv2
+# import cv2
+# from PIL import Image
 
 def train_loop():
     # train_path = "../data/mpii_human_pose_yolo_annots.json"
@@ -18,13 +19,14 @@ def train_loop():
 
     # for i in range(10):
     #     img, label = train_dataset.__getitem__(i)
-    #     print(torch.tensor(label).shape)
+    #     # print(label[1])
+    #     print("shpae: " + str(np.array(label).shape))
 
     train_dataloader = DataLoader(
         train_dataset,
         batch_size=16,
         shuffle=True,
-        num_workers=4
+        num_workers=4,
     )
 
     model = PoseRegressorModel(in_channels=3, hidden_channels=32)
@@ -36,8 +38,8 @@ def train_loop():
     for epoch in range(num_epochs):
         model.train()
         for img, targets in train_dataloader:
-            cv2.imshow("train_test", np.array(img))
-            cv2.waitKey(0)
+            # cv2.imshow("train_test", np.array(img))
+            # cv2.waitKey(0)
             
             optimizer.zero_grad()
             preds = model(img)

@@ -79143,13 +79143,6 @@
     }
   },
   {
-    "img_file_path": "C:/Users/korra/Documents/random/auto_nerf_shoot_drone/data/mpii_human_pose_meta_album/org/openml/www/datasets/44334/ACT_410_Extended/images/148447.jpg",
-    "average_confidence": "unknown",
-    "array_confidence": [],
-    "center_points": {},
-    "keypoints": {}
-  },
-  {
     "img_file_path": "C:/Users/korra/Documents/random/auto_nerf_shoot_drone/data/mpii_human_pose_meta_album/org/openml/www/datasets/44334/ACT_410_Extended/images/148580.jpg",
     "average_confidence": 0.90727299451828,
     "array_confidence": [

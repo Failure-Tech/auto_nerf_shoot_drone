@@ -5,10 +5,10 @@ import numpy as np
 class ComputeLoss():
     def __init__(self, pred, target_xy, target_sin, target_cos, target_conf):
         super(ComputeLoss, self).__init__()
-        self.xy_pred = pred[:, 0:2]
-        self.sin_pred = pred[:, 2]
-        self.cos_pred = pred[:, 3]
-        self.pred_conf = pred[:, 4]
+        self.xy_pred = pred[:2]
+        self.sin_pred = pred[2]
+        self.cos_pred = pred[3]
+        self.pred_conf = pred[4]
 
         self.target_xy = target_xy
         self.target_sin = target_sin
