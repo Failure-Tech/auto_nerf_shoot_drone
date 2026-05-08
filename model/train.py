@@ -10,6 +10,7 @@ from poseRegressor import PoseRegressorModel
 from loss import ComputeLoss
 # import cv2
 # from PIL import Image
+import matplotlib.pyplot as plt
 
 def train_loop():
     # train_path = "../data/mpii_human_pose_yolo_annots.json"
@@ -33,7 +34,9 @@ def train_loop():
 
     optimizer = torch.optim.Adam(params=model.parameters(), lr=0.01)
 
-    num_epochs = 100
+    num_epochs = 20
+
+    losses = []
 
     for epoch in range(num_epochs):
         model.train()
@@ -49,7 +52,12 @@ def train_loop():
 
             optimizer.step()
 
+        losses.append(curr_loss)
         print(f"Epoch: {epoch+1}, Loss: {curr_loss}")
+
+    plt.plot([epoch for epoch in range(num_epochs)], losses)
+    plt.savefig("train_loop_test_1.png", bbox_inches="tight")
+    plt.show()
         
 if __name__ == "__main__":
     train_loop()
