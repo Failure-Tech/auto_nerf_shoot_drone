@@ -1,5 +1,7 @@
 import torch
 from torchvision.io import decode_image
+from torchvision import transforms
+from PIL import Image
 
 from torch.utils.data import Dataset
 import json
@@ -17,8 +19,17 @@ class MPII_Human_Pose_YOLO(Dataset):
     def __getitem__(self, idx):
         img_path = self.annots[idx]["img_file_path"]
 
-        image_tensor = decode_image(img_path)
-        # transform = transforms.ToTensor()
+        # image = decode_image(img_path)
+        image = Image.open(img_path).convert("RGB")
+        transform = transforms.Compose([
+            transforms.ToTensor()
+        ])
+        image_tensor = transform(image)
+        # image_tensor = transform(image).cpu().numpy()
+        # if image_tensor.ndim==3:
+        #     image_tensor = np.transpose(image_tensor, (1,2,0))
+
+        # image_tensor = Image.fromarray(image_tensor.astype())
 
         # form vector for shoulder-hip midpoints avg[left_shoulder, right_shoulder] * avg[left_hip, right_hip] 
         # calculate angle w/ sin & cos or sm shi

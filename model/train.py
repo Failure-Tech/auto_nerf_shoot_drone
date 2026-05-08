@@ -45,10 +45,11 @@ def train_loop():
             preds = model(img)
 
             loss = ComputeLoss(preds, targets[0], targets[1], targets[2], targets[3])
-            
+            curr_loss = loss.compute_loss().item()
+
             optimizer.step()
 
-            print(f"Epoch: {epoch+1}, Loss: {loss:.4f}")
-
+        print(f"Epoch: {epoch+1}, Loss: {curr_loss}")
+        
 if __name__ == "__main__":
     train_loop()
