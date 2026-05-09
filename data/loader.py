@@ -8,7 +8,7 @@ import json
 import numpy as np
 
 class MPII_Human_Pose_YOLO(Dataset):
-    def __init__(self, data_annotations_path: str, transform=None, target_transform=None):
+    def __init__(self, data_annotations_path: str):
         super(MPII_Human_Pose_YOLO, self).__init__()
         with open(data_annotations_path, "r") as file:
             self.annots = json.load(file)
@@ -22,6 +22,7 @@ class MPII_Human_Pose_YOLO(Dataset):
         # image = decode_image(img_path)
         image = Image.open(img_path).convert("RGB")
         transform = transforms.Compose([
+            transforms.Resize((256, 256)),
             transforms.ToTensor()
         ])
         image_tensor = transform(image)

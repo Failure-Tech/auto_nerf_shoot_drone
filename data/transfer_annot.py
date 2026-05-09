@@ -5,8 +5,8 @@ import numpy as np
 from PIL import Image
 import json
 
-# path = "./mpii_human_pose_v1/images"
-path = "./mpii_human_pose_meta_album/org/openml/www/datasets/44334/ACT_410_Extended/images"
+path = "./mpii_human_pose_v1/images"
+# path = "./mpii_human_pose_meta_album/org/openml/www/datasets/44334/ACT_410_Extended/images"
 model = YOLO("yolo26n-pose.pt")
 
 # USE THIS FOR FINAL JSON STRUCTURED OUTPUT (on each index)
@@ -41,7 +41,12 @@ for root, _, filenames in os.walk(path):
                 abs_file_path = os.path.abspath(file_path).replace("\\", "/")
                 print(f"FILE PATH: {abs_file_path}")
 
-                result_metrics = model.predict(abs_file_path)
+                curr_unresize_img = np.array(Image.open(abs_file_path))
+                resized_image = cv2.resize(curr_unresize_img, (255, 255))
+
+                print(f"AFTER RESIZE SHAPE: {resized_image.shape}")
+                # result_metrics = model.predict(abs_file_path)
+                result_metrics = model.predict(resized_image)
 
                 curr_metric_obj = {}
                 boxes_metrics = {}
@@ -68,8 +73,8 @@ for root, _, filenames in os.walk(path):
 
                     curr_img = cv2.imread(file_path)
 
-                    for i in range(len(boxes.xywh)):
-                        x1, y1, w, h = boxes.xywh[i]
+                    for i in range(len(boxes.xywhn)):
+                        x1, y1, w, h = boxes.xywhn[i]
                         boxes_metrics[f"center_x_y_point_{i+1}"] = [x1.item(), y1.item()]
                         # curr_img[int(y1-15):int(y1), int(x1-15):int(x1)] = [0, 0, 255]
 
@@ -106,12 +111,12 @@ for root, _, filenames in os.walk(path):
     # break
 
 for value in data:
-    if isinstance(value["average_confidence"], str):
+    if (value["average_confidence"] == "unknown"):
         data.remove(value)
     else:
         continue
 
-with open("mpii_meta_albumhuman_pose_yolo_annots.json", "w") as f:
+with open("mpii_pose_256_256_yolo_annots.json", "w") as f:
     json.dump(data, f, indent=2)
 
 print(f"Saved json file")

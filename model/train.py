@@ -2,21 +2,18 @@ import sys
 sys.path.insert(0, "../data")
 
 import torch
-from torch.nn.utils.rnn import pad_sequence
-import numpy as np
 from torch.utils.data import DataLoader
 import loader
 from poseRegressor import PoseRegressorModel
 from loss import ComputeLoss
-# import cv2
-# from PIL import Image
 import matplotlib.pyplot as plt
 
 def train_loop():
     # train_path = "../data/mpii_human_pose_yolo_annots.json"
-    train_path = "../data/mpii_meta_albumhuman_pose_yolo_annots.json"
+    # train_path = "../data/mpii_meta_albumhuman_pose_yolo_annots.json"
+    train_path = "../data/mpii_pose_256_refined.json"
 
-    train_dataset = loader.MPII_Human_Pose_YOLO(train_path, transform=None, target_transform=None)
+    train_dataset = loader.MPII_Human_Pose_YOLO(train_path)
 
     # for i in range(10):
     #     img, label = train_dataset.__getitem__(i)
@@ -56,7 +53,7 @@ def train_loop():
         print(f"Epoch: {epoch+1}, Loss: {curr_loss}")
 
     plt.plot([epoch for epoch in range(num_epochs)], losses)
-    plt.savefig("train_loop_test_1.png", bbox_inches="tight")
+    plt.savefig("train_loop_test_2.png", bbox_inches="tight")
     plt.show()
         
 if __name__ == "__main__":
