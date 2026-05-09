@@ -31,7 +31,7 @@ def train_loop():
 
     optimizer = torch.optim.Adam(params=model.parameters(), lr=0.01)
 
-    num_epochs = 20
+    num_epochs = 10
 
     losses = []
 
