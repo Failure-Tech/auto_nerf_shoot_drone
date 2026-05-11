@@ -49,6 +49,10 @@ curr_statedict_path = "../model/checkpoints/checkpoint_30.pt"
 
 model = load_model(curr_statedict_path=curr_statedict_path)
 
+# 46659
+total_params = sum(p.numel() for p in model.parameters())
+print(total_params)
+
 img_path = "./construction_worker_test.png"
 input_image = preprocess_img(img_path=img_path)
 target_x, target_y, target_sin, target_cos, target_conf = model(input_image).squeeze(0).to(torch.float32)
