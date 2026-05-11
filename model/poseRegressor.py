@@ -35,13 +35,14 @@ class PoseRegressorModel(nn.Module):
         self.features = nn.Sequential(
             DepthwiseSearchableBlock(in_channels, hidden_channels, 3, 2, 1),
             DepthwiseSearchableBlock(hidden_channels, hidden_channels*2, 3, 2, 1),
-            DepthwiseSearchableBlock(hidden_channels*2, hidden_channels*4, 3, 2, 1)
+            DepthwiseSearchableBlock(hidden_channels*2, hidden_channels*4, 3, 2, 1),
+            DepthwiseSearchableBlock(hidden_channels*4, hidden_channels*8, 3, 2, 1),
         )
 
         self.pool = nn.AdaptiveAvgPool2d((1, 1))
         
         self.linear = nn.Linear(
-            in_features=hidden_channels*4,
+            in_features=hidden_channels*8,
             out_features=out_features,
             bias=True
         )

@@ -7,7 +7,7 @@ import json
 
 path = "./mpii_human_pose_v1/images"
 # path = "./mpii_human_pose_meta_album/org/openml/www/datasets/44334/ACT_410_Extended/images"
-model = YOLO("yolo26n-pose.pt")
+model = YOLO("yolo26x-pose.pt")
 
 # USE THIS FOR FINAL JSON STRUCTURED OUTPUT (on each index)
 keypoint_label = [
@@ -39,12 +39,15 @@ for root, _, filenames in os.walk(path):
             if (curr_total_index < len(filenames)):
                 file_path = (root + "/" + file).replace("\\", "/")
                 abs_file_path = os.path.abspath(file_path).replace("\\", "/")
-                print(f"FILE PATH: {abs_file_path}")
+                # print(f"FILE PATH: {abs_file_path}")
 
                 curr_unresize_img = np.array(Image.open(abs_file_path))
                 resized_image = cv2.resize(curr_unresize_img, (255, 255))
 
-                print(f"AFTER RESIZE SHAPE: {resized_image.shape}")
+                # cv2.imshow("test", resized_image)
+                # cv2.waitKey(0)
+
+                # print(f"AFTER RESIZE SHAPE: {resized_image.shape}")
                 # result_metrics = model.predict(abs_file_path)
                 result_metrics = model.predict(resized_image)
 
@@ -92,7 +95,7 @@ for root, _, filenames in os.walk(path):
                             # curr_img[int(point_y.item()-10):int(point_y.item()), int(point_x.item()-50):int(point_x.item())] = [0, 0, 255]
                             curr_keypoint_label = keypoint_label[i]
                             keypoints_joint[curr_keypoint_label] = [point_x.item(), point_y.item()]
-                            print(f"Current Keypoint Label: {keypoints_joint[curr_keypoint_label]}")
+                            # print(f"Current Keypoint Label: {keypoints_joint[curr_keypoint_label]}")
                     
                     curr_metric_obj["keypoints"] = keypoints_joint
 

@@ -11,7 +11,8 @@ import matplotlib.pyplot as plt
 def train_loop():
     # train_path = "../data/mpii_human_pose_yolo_annots.json"
     # train_path = "../data/mpii_meta_albumhuman_pose_yolo_annots.json"
-    train_path = "../data/mpii_pose_256_refined.json"
+    # train_path = "../data/mpii_pose_256_refined.json"
+    train_path = "../data/mpii_pose_256_256_parsed_conf.json"
 
     train_dataset = loader.MPII_Human_Pose_YOLO(train_path)
 
@@ -29,9 +30,9 @@ def train_loop():
 
     model = PoseRegressorModel(in_channels=3, hidden_channels=32)
 
-    optimizer = torch.optim.Adam(params=model.parameters(), lr=0.01)
+    optimizer = torch.optim.Adam(params=model.parameters(), lr=1e-4)
 
-    num_epochs = 10
+    num_epochs = 50
 
     losses = []
 
@@ -48,6 +49,16 @@ def train_loop():
             curr_loss = loss.compute_loss().item()
 
             optimizer.step()
+
+        if (epoch%10==0):
+            checkpoint = {
+                "epoch": epoch,
+                "model_state_dict": model.state_dict(),
+                "optimizer_state_dict": optimizer.state_dict(),
+                "loss": curr_loss
+            }
+
+            torch.save(checkpoint, f"checkpoint_{epoch}.pt")
 
         losses.append(curr_loss)
         print(f"Epoch: {epoch+1}, Loss: {curr_loss}")
